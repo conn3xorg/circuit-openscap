@@ -74,6 +74,30 @@ jobs:
       - name: Run a scan through the timer's service and check its results
         working-directory: examples/local
         run: sudo podman exec -i circuit-openscap sh < check.sh
+      # A fresh host gets the previous release, then the circuit's own pin is
+      # applied over it, the way someone raises content_version. Rocky Linux
+      # scans with its own scap-security-guide package, which the pin doesn't
+      # change, and Debian 13's CIS profiles first shipped in 0.1.82.
+      - name: Upgrade from SCAP Security Guide 0.1.81 on a fresh host, then plan again with no changes
+        if: matrix.distro == 'ubuntu2404' || matrix.distro == 'fedora45'
+        working-directory: examples/local
+        env:
+          CONTAINERFILE: ${{ github.workspace }}/conn3x/test/images/${{ matrix.distro }}/Containerfile
+          PODMAN: sudo podman
+        run: |
+          ./down.sh
+          ./up.sh
+          conn3x init
+          conn3x apply -auto-approve -var content_version=0.1.81 -var content_sha256=865e28b793e1e65f7f0102434bc7d962324a4b9324591e60742f1e9ce375172c
+          sudo podman exec circuit-openscap grep -q /usr/local/share/conn3x-scap/0.1.81/ /usr/local/sbin/conn3x-scap
+          sudo podman exec -i circuit-openscap sh < check.sh
+          conn3x apply -auto-approve
+          conn3x plan -detailed-exitcode
+          sudo podman exec circuit-openscap grep -q /usr/local/share/conn3x-scap/0.1.82/ /usr/local/sbin/conn3x-scap
+      - name: Check a scan with the upgraded content
+        if: matrix.distro == 'ubuntu2404' || matrix.distro == 'fedora45'
+        working-directory: examples/local
+        run: sudo podman exec -i circuit-openscap sh < check.sh
       - name: Clean up
         if: always()
         working-directory: examples/local
