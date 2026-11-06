@@ -52,6 +52,7 @@ variable "profile" {
 variable "content_version" {
   type        = string
   default     = "0.1.82"
+  nullable    = false
   description = "SCAP Security Guide release from ComplianceAsCode to scan with on Ubuntu, Debian and Fedora. Rocky Linux uses its own scap-security-guide package."
 
   validation {
@@ -63,6 +64,7 @@ variable "content_version" {
 variable "content_sha256" {
   type        = string
   default     = "765e84bdce7f9055f9b9c2dd0ee2b713d4255f8eec94eac6d35ea4973c28919c"
+  nullable    = false
   description = "SHA-256 of scap-security-guide-<content_version>.zip. Change it with content_version."
 
   validation {
