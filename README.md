@@ -12,7 +12,7 @@ A scan tells you how a host measures up against the rules in the content. It isn
 
 ```hcl
 module "openscap" {
-  source = "github.com/conn3xorg/circuit-openscap?ref=v0.1.2"
+  source = "github.com/conn3xorg/circuit-openscap?ref=v0.1.3"
 
   hosts                = { web = "203.0.113.10", db = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -81,7 +81,7 @@ Conn3x logs in over SSH, usually as root, so leave out the rules that would stop
 
 ```hcl
 module "openscap" {
-  source = "github.com/conn3xorg/circuit-openscap?ref=v0.1.2"
+  source = "github.com/conn3xorg/circuit-openscap?ref=v0.1.3"
 
   hosts                = { web = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
