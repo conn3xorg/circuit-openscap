@@ -206,6 +206,7 @@ circuit "scap" {
   # which isn't in the list.
   step "profile_valid" {
     for_each = toset(var.tailoring == null ? ["profile"] : [])
+    # conn3x-lint:ignore C3X101 a gate that stops the first apply before a timer that would fail every week; it changes nothing
     command {
       command = "oscap info --profiles ${local.datastream[each.key]} | grep -q '^${local.base_profile[each.key]}:' || { echo 'No profile ${local.base_profile[each.key]} in ${local.datastream[each.key]}. List them with: oscap info ${local.datastream[each.key]}' >&2; exit 1; }"
     }
